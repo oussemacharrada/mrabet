@@ -11,9 +11,18 @@
 */
 use App\Dommage;
 
+Route::get('/' , function(){return view('front.user.uza.index');})->name('index');
+Route::get('/index' , function(){return view('front.user.uza.index');})->name('index');
+Route::get('/about' ,function(){return view('front.user.uza.about');})->name('about');
+Route::get('/blog' ,function(){return view('front.user.uza.blog');})->name('blog');;
+Route::get('/contact' ,function(){return view('front.user.uza.contact');})->name('contact');;
+Route::get('/services' ,function(){return view('front.user.uza.services');})->name('services');;
+
+
+/*
 Route::get('/', function () {
     return view('auth.login');
-});
+});*/
 Auth::routes(['register' => false]);
 // $this->get('login', 'Auth\LoginController@showLoginForm')->name('login');
 // $this->post('login', 'Auth\LoginController@login');

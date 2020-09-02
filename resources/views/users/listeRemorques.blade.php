@@ -1,13 +1,14 @@
-@extends('layouts.app')
+@extends('layouts.templateback')
 @section('content')
 
 
-        <div align="right" style="padding:20px">
+        <div >
             <a href="{{action('remorqueController@cRemorqueview',$idVoyage)}}" class="btn btn-primary">Add a new remorque</a>
         </div>
+
         @if($etat=='phase1')
 
-        <div class="row justify-content-center">
+        <div class="row">
         <div class="col-md-10">
          <div class="card-header">phase1:liste Remorque </div>
                 <div class="table-responsive">

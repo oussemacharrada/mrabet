@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.templateback')
 @section('content')
 @if (count($errors) > 0)
         <div class="alert alert-danger">

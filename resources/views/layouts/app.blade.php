@@ -77,7 +77,7 @@
                     </ul>
 
                     <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto">
+                    <div class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         @guest
 
@@ -101,6 +101,7 @@
                                     <a class="dropdown-item" href="{{ route('CVoyage') }}">ajouter voyage</a>
                                     <a class="dropdown-item" href="{{ route('CVoyageList') }}">Voyage Liste</a>
                                     @endcan
+                                    
                                     @can('manage-work')
                                     <a class="dropdown-item" href="{{ route('vtache') }}">Voir tache</a>
                                     @endcan
