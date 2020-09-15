@@ -7,6 +7,8 @@ use App\Role;
 use App\User;
 use Gate;
 use Illuminate\Http\Request;
+use DataTables;
+ 
 
 class UsersController extends Controller
 {
@@ -15,11 +17,30 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        
-        $users= User::all();
-        return view('admin.users.index')->with('users',$users);    
+    public function index(Request $request)
+    {   
+        if ($request->ajax())
+        {
+            $users=User::all();
+            return DataTables::of($users)
+            ->addColumn('Edit',function ($row)
+            {
+                $btn="<a href=".route('admin.users.edit',$row->id)."> <button type=\"button\" class=\"btn btn-outline-primary\">Edit </button></a>" ;
+                return $btn;
+            })
+            ->addColumn('Delete',function ($row)
+            {
+                $user=User::find($row->id);
+                $btn="<td> <form action=".route('admin.users.destroy',$user)."  method=\"POST\" >"
+                .csrf_field(csrf_token())
+                .method_field('DELETE')."<button class=\"btn btn-outline-primary\" type=\"submit\">Delete</button>  </form> </td>" ;
+                return $btn;
+            })
+            ->rawColumns(['Edit','Delete'])
+            ->make(true);
+        }
+         
+        return view('admin.users.index'); 
         
             //
     }
@@ -108,3 +129,5 @@ return redirect()->route('admin.users.index');
             return redirect()->route('admin.users.index');
     }
 }
+
+

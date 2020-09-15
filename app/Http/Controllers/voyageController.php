@@ -5,12 +5,32 @@ namespace App\Http\Controllers;
 use App\User;
 use App\voyage;
 use Illuminate\Http\Request;
+use DataTables;
+use Illuminate\Support\Facades\DB;
+
 
 class voyageController extends Controller
 {
-    public function index(){
-        $voyages = \App\voyage::all();
-        return view('admin.Voyage.listVoyage',compact('voyages'));
+    public function index(Request $request){
+
+        if ($request->ajax())
+        {
+            
+            $voyages =voyage::all();
+            return DataTables::of($voyages)
+            ->addColumn('Edit',function($row)
+            {  $btn='<a href="edit/'.$row->idVoyage.'"><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil">Edit</span></button></p></a>';
+                return $btn; })
+            ->addColumn('Delete',function($row)
+            {   $btn ='<a href="delete/'.$row->idVoyage.'" ><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash">Delete</span></button></p></a>';
+                return $btn;})
+                ->rawColumns(['Edit','Delete'])
+            ->make(true);
+
+        }
+
+         
+        return view('admin.Voyage.listVoyage');
     }
 
 
@@ -79,13 +99,7 @@ class voyageController extends Controller
     }
 
 
-    public function search(Request $request)
-    {
-          $search = $request->get('term');
-          $result = User::select('name_id', 'name')->where('lastname', 'LIKE', '%'. $search. '%')->get();
-          return response()->json($result);
-
-    }
+    
 
 
 }

@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
 use App\Mail\WelcomeMail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
@@ -59,9 +60,7 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'lastname' => ['required', 'string', 'max:255'],
             'cin' => ['required',  'min:8','max:8','unique:users'],
-
             ]);
-
         }
 
     /**
@@ -72,19 +71,30 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $user= User::create([
+        $number=0;
+        $namecode= strtoupper($data['lastname'][0].$data['lastname'][1].$data['name'][0]);
+       
+        while( DB::table('Users')->where('name_id',$namecode)->exists()){
+            $number=$number+1;  
+            $namecode=($namecode[0].$namecode[1].$namecode[2]);
+            $namecode=$namecode.$number;
+            var_dump($namecode);
+ 
+        }
+       
+     
+        var_dump($namecode);
+            $user= User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'lastname' => $data['lastname'],
-            'name_id' => strtoupper($data['lastname'][0].$data['lastname'][1].$data['name'][0]),
+            'name_id' => $namecode,
             'cin' => $data['cin'],
-
             ]);
             $role = Role::select('id')->where('name','user')->first();
             $user->roles()->attach($role);
-            Mail::to($data['email'])->send(new WelcomeMail($user));
-         
+    /  Mail::to($data['email'])->send(new WelcomeMail($user));
             return $user;
         }
     protected function guard()
@@ -94,11 +104,9 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $this->validator($request->all())->validate();
-
         event(new Registered($user = $this->create($request->all())));
-
         return $this->registered($request, $user)
-            ?: redirect($this->redirectPath());
+        ?: redirect($this->redirectPath());
     }
     public function showRegistrationForm()
     {
